@@ -47,6 +47,7 @@ Arquivo::~Arquivo(){
 }
 
 void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao){
+    cout<<"CONTEUDO ARQ: "<<conteudoArq<<endl;
     int i;
     //Contagem por caractere
     if(tipoCodificacao == false){
@@ -68,6 +69,8 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
             else{
                 int pos;
                 pos = 256-(256-conteudoArq[i]);
+                cout<<"CHAR: "<<conteudoArq[i]<<endl;
+                cout<<"DECIMAL: "<<pos<<"\n\n";
                 simbolos[pos].simbolo = char(pos);
                 simbolos[pos].nAparicoes++;
             }
@@ -80,20 +83,9 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
     Simbolo simbolos[TAMANHO_ASCII];
     string arquivo;
-    arquivo = "Ola eu sou larissa e nao doida cansada triste\n";
 
-    contarAparicoes(arquivo, simbolos, tipoCodificacao);
+
+    contarAparicoes("cachaça", simbolos, tipoCodificacao);
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);
-}
-
-int main(){
-    No nos[TAMANHO_ASCII];
-    int tamanho;
-    Arquivo arq;
-    arq.gerarNos(nos, &tamanho, false);
-    cout<<"TAM: "<<tamanho<<endl;
-    for(int i = 0; i < tamanho; i++){
-        cout<<"NO:\n"<<"Conteudo:"<<nos[i].conteudo<<"\nFrequencia:"<<nos[i].frequencia<<"\nDIR:"<<nos[i].dir<<"\nESQ:"<<nos[i].esq<<"\n\n";
-    }
 }

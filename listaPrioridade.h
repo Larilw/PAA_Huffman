@@ -7,13 +7,15 @@
 
 class ListaPrioridade{
     public:
-        No no;
+        No *no;
         ListaPrioridade *prox;
-        ListaPrioridade(No no);
+        ListaPrioridade(No *no);
+        ListaPrioridade();
         ~ListaPrioridade();
-        No obterNo();
-        No *obterProx();
-        void inserirOrdenado(No no);
+        bool ehVazia();
+        int obterTamanho();
+        No *extrairPrimeiro();
+        void inserirOrdenado(No *no);
 };
 
 #endif

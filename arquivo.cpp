@@ -47,7 +47,6 @@ Arquivo::~Arquivo(){
 }
 
 void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao){
-    cout<<"CONTEUDO ARQ: "<<conteudoArq<<endl;
     int i;
     //Contagem por caractere
     if(tipoCodificacao == false){
@@ -61,18 +60,17 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
                     simbolos[257].nAparicoes++;
                     simbolos[257].simbolo.assign("ht");
                 }
+                //problema \r e \f
                 else if(conteudoArq[i] == '\r'){
                     simbolos[258].nAparicoes++;
                     simbolos[258].simbolo.assign("cr");
                 }
             }
             else{
-                int pos;
-                pos = 256-(256-conteudoArq[i]);
-                cout<<"CHAR: "<<conteudoArq[i]<<endl;
-                cout<<"DECIMAL: "<<pos<<"\n\n";
-                simbolos[pos].simbolo = char(pos);
-                simbolos[pos].nAparicoes++;
+                    int pos;
+                    pos = 256-(256-conteudoArq[i]);
+                    simbolos[pos].simbolo = char(pos);
+                    simbolos[pos].nAparicoes++;
             }
         }
 
@@ -83,9 +81,8 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
     Simbolo simbolos[TAMANHO_ASCII];
     string arquivo;
-
-
-    contarAparicoes("cachaça", simbolos, tipoCodificacao);
+    arquivo = "abacaxi nao ";
+    contarAparicoes(arquivo, simbolos, tipoCodificacao);
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);
 }

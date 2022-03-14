@@ -8,7 +8,10 @@ No::No(string conteudo, int frequencia, No *esq, No *dir){
 }
 
 No::No(){
-    
+    this->conteudo = "";
+    this->frequencia = -1;
+    this->esq = NULL;
+    this->dir = NULL;
 }
 
 No::~No(){

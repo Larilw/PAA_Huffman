@@ -51,37 +51,18 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
     //Contagem por caractere
     if(tipoCodificacao == false){
         for(i = 0 ; i < conteudoArq.length() ; i++){
-            if((conteudoArq[i] == '\n') || (conteudoArq[i] == '\t') || (conteudoArq[i] == '\r') || (conteudoArq[i] == '\f')){
-                if(conteudoArq[i] == '\n'){
-                    simbolos[256].nAparicoes++;
-                    simbolos[256].simbolo.assign("nl");
-                }
-                else if(conteudoArq[i] == '\t'){
-                    simbolos[257].nAparicoes++;
-                    simbolos[257].simbolo.assign("ht");
-                }
-                //problema \r e \f
-                else if(conteudoArq[i] == '\r'){
-                    simbolos[258].nAparicoes++;
-                    simbolos[258].simbolo.assign("cr");
-                }
-            }
-            else{
-                    int pos;
-                    pos = 256-(256-conteudoArq[i]);
-                    simbolos[pos].simbolo = char(pos);
-                    simbolos[pos].nAparicoes++;
-            }
+            int pos;
+            pos = (unsigned char)conteudoArq[i];
+            simbolos[pos].simbolo = char(pos);
+            simbolos[pos].nAparicoes++;
         }
-
     }
-
 }
 
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
     Simbolo simbolos[TAMANHO_ASCII];
     string arquivo;
-    arquivo = "abacaxi nao ";
+    arquivo = "abacaxi nao";
     contarAparicoes(arquivo, simbolos, tipoCodificacao);
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);

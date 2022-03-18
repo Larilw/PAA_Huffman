@@ -5,6 +5,7 @@
 #include "constantes.h"
 #include <string>
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 
@@ -24,7 +25,7 @@ class Arquivo{
         ~Arquivo();
         void contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao);
         void gerarNos(No nos[], int *tamNos, bool tipoCodificacao);
-        
+        void contarPalavras(string conteudoArq, Simbolo simbolos[]);
 };
 
 #endif

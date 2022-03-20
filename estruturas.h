@@ -18,12 +18,18 @@ class No{
 };
 
 class Arvore{
-    private:
-        No *raiz;
+    // private:
 
     public:
+        No *raiz;
         Arvore(No *raiz);
         ~Arvore();
+};
+
+class Codigo {
+    public:
+        string codigo;
+        string conteudo;
 };
 
 #endif

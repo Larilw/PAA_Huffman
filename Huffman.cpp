@@ -1,4 +1,5 @@
 #include "Huffman.h"
+#include <fstream>
 
 bool levelOrder(No *no, int level){
     if(no == NULL){
@@ -41,6 +42,29 @@ void imprimir(No *no){
     }
 }
 
+void escreveNo(No *raiz, ostream &out)
+{
+    if (raiz->ehFolha()) {
+        // escreve "#"
+        out << "# ";
+    } else {
+        // escreve estrutura
+        out << raiz->conteudo << ";";
+        out << raiz->frequencia << " ";
+        escreveNo(raiz->esq, out);
+        escreveNo(raiz->dir, out);
+    }
+}
+
+/**
+*
+*
+**/
+void escreveArvore(Arvore *tree, ostream &out)
+{
+    escreveNo(tree->raiz, out);
+}
+
 No *Huffman::gerarArvore(ListaPrioridade *lista){
     for(; lista->obterTamanho() > 1 ;){
         No *novoNo;
@@ -53,7 +77,37 @@ No *Huffman::gerarArvore(ListaPrioridade *lista){
     return lista->extrairPrimeiro();
 }
 
-int main(){
+std::vector<Codigo> Huffman::codificar(No *raiz)
+{
+    std::vector<Codigo> codes;
+    codificar_recursiva(raiz, "", codes);
+
+    return codes;
+}
+
+void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codigo> &codes)
+{
+    // Se o nó for folha, pega o conteúdo do nó e seta no array com seu código de identificação
+    if ( raiz->ehFolha() ) {
+        Codigo *code = new Codigo;
+        code->codigo = codigo;
+        code->conteudo = raiz->conteudo;
+        codes.push_back(*code);
+
+        return;
+
+    } else {
+    // Chama função para esquerda, adicionando um 0 em uma string
+        codificar_recursiva(raiz->esq, codigo + "0", codes);
+    // Chama função para direita
+        codificar_recursiva(raiz->dir, codigo + "1", codes);
+    }
+}
+
+int main() {
+    ofstream out;
+    out.open("test.txt");
+
     No nos[TAMANHO_ASCII];
     int tamanho;
     Arquivo arq;
@@ -68,7 +122,16 @@ int main(){
             lista->inserirOrdenado(&nos[i]);
         }
         result = arv.gerarArvore(lista);
-        printArvore(result);
-
+        // cout << "Meu print:" << endl;
+        // No *teste;
+        // teste = result;
+        // for (i=0; i < 3; i++) {
+        //     cout << "alo:" << endl;
+        //     cout << teste->conteudo << endl;
+        //     teste = teste->dir;
+        // }
+        // printArvore(result);
+        arv.codificar(result);
+        escreveNo(result, out);
     }
 }

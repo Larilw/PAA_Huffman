@@ -1,5 +1,27 @@
 #include "arquivo.h"
 
+int encontrarPalavra(Simbolo simbolos[], string palavra)
+{
+    int i;
+    for (int i = 0; i < TAMANHO_PALAVRAS ; i++) {
+        if (simbolos[i].simbolo == palavra) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int ultimaPosicao(Simbolo simbolos[])
+{
+    int i;
+    while (simbolos[i].simbolo.length() > 0) {
+        i++;
+    }
+
+    return i;
+}
+
 Simbolo::Simbolo(){
     this->nAparicoes = 0;
     this->simbolo = "";
@@ -59,6 +81,25 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
     }
     else{
         
+    }
+}
+
+void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
+    string word;
+ 
+    stringstream iss(conteudoArq);
+ 
+    while (iss >> word) {
+        int i;
+        i = encontrarPalavra(simbolos, word);
+        if ( i >= 0 ) {
+            simbolos[i].simbolo = word;
+            simbolos[i].nAparicoes++;
+        } else {
+            int pos = ultimaPosicao(simbolos);
+            simbolos[pos].simbolo = word;
+            simbolos[pos].nAparicoes++;
+        }
     }
 }
 

@@ -26,21 +26,6 @@ void printArvore(No *no){
     }
 }
 
-void imprimir(No *no){
-    if(no->esq != NULL){
-        imprimir(no->esq);
-    }
-    if(no->dir != NULL){
-        imprimir(no->dir);
-    }
-    if(no->conteudo.empty()){
-        cout<<no->frequencia<<" ";
-    }
-    else{
-        cout<<no->conteudo<<" ";
-    }
-}
-
 No *Huffman::gerarArvore(ListaPrioridade *lista){
     for(; lista->obterTamanho() > 1 ;){
         No *novoNo;
@@ -53,6 +38,7 @@ No *Huffman::gerarArvore(ListaPrioridade *lista){
     return lista->extrairPrimeiro();
 }
 
+/*
 int main(){
     No nos[TAMANHO_ASCII];
     int tamanho;
@@ -72,3 +58,4 @@ int main(){
 
     }
 }
+*/

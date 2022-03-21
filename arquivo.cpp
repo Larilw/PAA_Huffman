@@ -57,12 +57,15 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
             simbolos[pos].nAparicoes++;
         }
     }
+    else{
+        
+    }
 }
 
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
     Simbolo simbolos[TAMANHO_ASCII];
     string arquivo;
-    arquivo = "abacaxi nao";
+    arquivo = "abacaxi nao \n";
     contarAparicoes(arquivo, simbolos, tipoCodificacao);
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);

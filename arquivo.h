@@ -5,6 +5,7 @@
 #include "constantes.h"
 #include <string>
 #include <iostream>
+#include <string.h>
 using namespace std;
 
 

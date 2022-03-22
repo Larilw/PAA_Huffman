@@ -30,6 +30,9 @@ class Codigo {
     public:
         string codigo;
         string conteudo;
+
+        std::string getCodigo() const;
+        std::string getConteudo() const;
 };
 
 #endif

@@ -1,5 +1,7 @@
 #include "arquivo.h"
 
+// #include "Huffman.cpp"
+
 int encontrarPalavra(Simbolo simbolos[], string palavra)
 {
     int i;
@@ -60,12 +62,22 @@ void ordenarSimbolos(No nos[], int tam){
     }
 }
 
-Arquivo::Arquivo(){
-
+Arquivo::Arquivo()
+{
+    this->arq.open("aloha.txt");
 }
 
-Arquivo::~Arquivo(){
+Arquivo::~Arquivo()
+{
+}
 
+void Arquivo::escreverCodificacao(std::vector<Codigo> codes)
+{
+    int i;
+    for (auto it = begin (codes); it != end (codes); ++it) {
+        cout << it->getCodigo() << endl;
+        // i = findCodigo(codes, it->getConteudo());
+    }
 }
 
 void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao){

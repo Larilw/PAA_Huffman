@@ -1,5 +1,6 @@
 #include "Huffman.h"
 #include <fstream>
+#include <algorithm>
 
 bool levelOrder(No *no, int level){
     if(no == NULL){
@@ -56,6 +57,20 @@ void escreveNo(No *raiz, ostream &out)
     }
 }
 
+int findCodigo(std::vector<Codigo> codes, std::string conteudo)
+{
+    auto it = std::find_if(codes.begin(), codes.end(), [&conteudo](const Codigo& obj) {
+        return obj.getConteudo() == conteudo;
+    });
+
+    if (it != codes.end())
+    {
+        return std::distance(codes.begin(), it);
+    }
+    
+    return 0;
+}
+
 /**
 *
 *
@@ -77,9 +92,9 @@ No *Huffman::gerarArvore(ListaPrioridade *lista){
     return lista->extrairPrimeiro();
 }
 
-std::vector<Codigo> Huffman::codificar(No *raiz)
+std::vector<Codigo> Huffman::codificar(No *raiz, std::vector<Codigo> &codes)
 {
-    std::vector<Codigo> codes;
+    // std::vector<Codigo> codes;
     codificar_recursiva(raiz, "", codes);
 
     return codes;
@@ -131,7 +146,12 @@ int main() {
         //     teste = teste->dir;
         // }
         // printArvore(result);
-        arv.codificar(result);
-        escreveNo(result, out);
+        std::vector<Codigo> codes;
+        arv.codificar(result, codes);
+        cout << codes[3].getCodigo() << endl;
+        cout << codes[3].getConteudo() << endl;
+        cout << findCodigo(codes, "o") << endl;
+        escreveNo(result, arq.arq);
+        arq.escreverCodificacao(codes);
     }
 }

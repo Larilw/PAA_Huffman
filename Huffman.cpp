@@ -68,7 +68,7 @@ int findCodigo(std::vector<Codigo> codes, std::string conteudo)
         return std::distance(codes.begin(), it);
     }
     
-    return 0;
+    return -1;
 }
 
 /**
@@ -119,6 +119,48 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
     }
 }
 
+/**
+*
+*   Function to call from menu
+*
+**/
+void codificar_menu(Huffman arv, No* raiz, std::vector<Codigo> &codes)
+{
+    // Codifica a lista e guarda todos os códigos no array codes
+    arv.codificar(raiz, codes);
+
+    // Escreve o texto codificado no corpo do arquivo
+
+}
+
+void escreverCodificacao(std::vector<Codigo> codes, ofstream &out)
+{
+    int i;
+    std::string str = "abacaxi nao";
+
+    // Move para o final do arquivo
+    out.seekp(0, ios::end);
+    
+    // Escreve \n
+    out << endl;
+
+    for (int i=0; i < str.length(); i++) {
+        string s(1, str[i]);
+        int index = findCodigo(codes, s);
+        if ( index != -1 ) {
+            out << codes[index].getCodigo();
+        }
+    }
+}
+
+void printCodigos(std::vector<Codigo> codes)
+{
+    for (auto it = begin (codes); it != end (codes); ++it) {
+        cout << "Caractere: " << it->getConteudo();
+        cout << "Código: " << it->getCodigo() << endl;
+    }
+}
+
 int main() {
     ofstream out;
     out.open("test.txt");
@@ -137,21 +179,20 @@ int main() {
             lista->inserirOrdenado(&nos[i]);
         }
         result = arv.gerarArvore(lista);
-        // cout << "Meu print:" << endl;
-        // No *teste;
-        // teste = result;
-        // for (i=0; i < 3; i++) {
-        //     cout << "alo:" << endl;
-        //     cout << teste->conteudo << endl;
-        //     teste = teste->dir;
-        // }
         // printArvore(result);
+
+        escreveNo(result, arq.arq);
+
+        // Codificação
         std::vector<Codigo> codes;
         arv.codificar(result, codes);
-        cout << codes[3].getCodigo() << endl;
-        cout << codes[3].getConteudo() << endl;
-        cout << findCodigo(codes, "o") << endl;
-        escreveNo(result, arq.arq);
-        arq.escreverCodificacao(codes);
+        // Escreve codificação no arquivo
+        escreverCodificacao(codes, arq.arq);
+        // arq.escreverCodificacao(codes);
+
+        // Decodificação
+        
+
+        printCodigos(codes);
     }
 }

@@ -74,10 +74,16 @@ Arquivo::~Arquivo()
 void Arquivo::escreverCodificacao(std::vector<Codigo> codes)
 {
     int i;
-    for (auto it = begin (codes); it != end (codes); ++it) {
-        cout << it->getCodigo() << endl;
-        // i = findCodigo(codes, it->getConteudo());
+    string arquivo = "abacaxi nao";
+
+    for (int i=0; i < arquivo.length(); i++) {
+        // this->arq << findCodigo(codes, arquivo[i]);
     }
+
+    // for (auto it = begin (codes); it != end (codes); ++it) {
+        // cout << it->getCodigo() << endl;
+        // i = findCodigo(codes, it->getConteudo());
+    // }
 }
 
 void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao){

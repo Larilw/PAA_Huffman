@@ -73,12 +73,12 @@ Arquivo::~Arquivo()
 
 void Arquivo::escreverCodificacao(std::vector<Codigo> codes)
 {
-    int i;
-    string arquivo = "abacaxi nao";
+    // int i;
+    // string arquivo = "abacaxi nao";
 
-    for (int i=0; i < arquivo.length(); i++) {
+    // for (int i=0; i < arquivo.length(); i++) {
         // this->arq << findCodigo(codes, arquivo[i]);
-    }
+    // }
 
     // for (auto it = begin (codes); it != end (codes); ++it) {
         // cout << it->getCodigo() << endl;
@@ -118,11 +118,11 @@ void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
     }
 }
 
-void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
+void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto){
     Simbolo simbolos[TAMANHO_ASCII];
-    string arquivo;
-    arquivo = "abacaxi nao";
-    contarAparicoes(arquivo, simbolos, tipoCodificacao);
+    // string arquivo;
+    // arquivo = "um texto um pouco maior para ver se a avore gerada eh a mesma";
+    contarAparicoes(texto, simbolos, tipoCodificacao);
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);
 }

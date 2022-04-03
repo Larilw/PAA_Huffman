@@ -299,6 +299,7 @@ string leConteudo(ifstream &input)
     string content;
     while(getline(input, tp)) {
         content += tp;
+        content += '\n';
     }
 
     return content;
@@ -345,7 +346,7 @@ void menu_compressao(bool tipo_algoritmo = false)
     Arquivo arq;
     Huffman arv;
     No *result;
-    arq.gerarNos(nos, &tamanho, true, texto);
+    arq.gerarNos(nos, &tamanho, tipo_algoritmo, texto);
     ListaPrioridade *lista;
     if (tamanho >= 1) {
         lista = new ListaPrioridade(&nos[0]);
@@ -363,7 +364,7 @@ void menu_compressao(bool tipo_algoritmo = false)
     ofstream file("compactado.bin", ios::out | ios::binary);
  
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
-    escreverCodificacao(codes, file, texto, true); // Escreve o texto codificado no arquivo
+    escreverCodificacao(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
 
     file.close();
     if (!file.good()) {
@@ -393,11 +394,11 @@ void menu_descompressao(bool tipo_algoritmo = false)
 
     ofstream outfile("descompactado.txt", ios::out | ios::binary);
 
-    outfile << huff.decodificar(arvore, texto_codificado, true);
+    outfile << huff.decodificar(arvore, texto_codificado, tipo_algoritmo);
 }
 
 int main() {
-    menu_compressao();
-    menu_descompressao();
+    menu_compressao(false);
+    menu_descompressao(false);
     return 0;
 }

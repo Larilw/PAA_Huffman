@@ -64,26 +64,10 @@ void ordenarSimbolos(No nos[], int tam){
 
 Arquivo::Arquivo()
 {
-    this->arq.open("aloha.txt");
 }
 
 Arquivo::~Arquivo()
 {
-}
-
-void Arquivo::escreverCodificacao(std::vector<Codigo> codes)
-{
-    // int i;
-    // string arquivo = "abacaxi nao";
-
-    // for (int i=0; i < arquivo.length(); i++) {
-        // this->arq << findCodigo(codes, arquivo[i]);
-    // }
-
-    // for (auto it = begin (codes); it != end (codes); ++it) {
-        // cout << it->getCodigo() << endl;
-        // i = findCodigo(codes, it->getConteudo());
-    // }
 }
 
 void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao){
@@ -119,10 +103,23 @@ void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
 }
 
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto){
-    Simbolo simbolos[TAMANHO_ASCII];
-    // string arquivo;
-    // arquivo = "um texto um pouco maior para ver se a avore gerada eh a mesma";
-    contarAparicoes(texto, simbolos, tipoCodificacao);
+
+    int tam;
+    if ( tipoCodificacao == false ) {
+        tam = TAMANHO_ASCII;
+    } else {
+        tam = TAMANHO_PALAVRAS;
+    }
+
+    Simbolo simbolos[tam];
+
+    if ( tipoCodificacao == false ) {
+        contarAparicoes(texto, simbolos, tipoCodificacao);
+
+    } else {
+        contarPalavras(texto, simbolos);
+    }
+
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);
 }

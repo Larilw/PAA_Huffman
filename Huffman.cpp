@@ -200,7 +200,7 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
     }
 }
 
-string Huffman::decodificar(No *raiz, std::string texto_codificado)
+string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_decodificacao)
 {
     std::string texto_decodificado;
     texto_codificado += ";";
@@ -214,6 +214,10 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado)
         if ( noAux->ehFolha() ) {
             texto_decodificado += noAux->conteudo;
             noAux = raiz;
+
+            if ( tipo_decodificacao == true ) {
+                texto_decodificado += " ";
+            }
 
         } else {
             std::string s;
@@ -235,7 +239,7 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado)
     return texto_decodificado;
 }
 
-void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str)
+void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, bool tipoCodificacao)
 {
     int i;
 
@@ -245,11 +249,27 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str)
     // Escreve \n
     // out << endl;
 
-    for (int i=0; i < str.length(); i++) {
-        string s(1, str[i]);
-        int index = findCodigo(codes, s);
-        if ( index != -1 ) {
-            out << codes[index].getCodigo();
+    // Codificação por caractere
+    if ( tipoCodificacao == false ) {
+        for (int i=0; i < str.length(); i++) {
+            string s(1, str[i]);
+            int index = findCodigo(codes, s);
+            if ( index != -1 ) {
+                out << codes[index].getCodigo();
+            }
+        }
+    // Codificação por palavra
+    } else {
+        string word;
+ 
+        stringstream iss(str);
+ 
+        while (iss >> word) {
+            int index = findCodigo(codes, word);
+            if ( index != -1 ) {
+                // cout << "código:" << codes[index].getCodigo() << endl;
+                out << codes[index].getCodigo();
+            }
         }
     }
 }
@@ -300,8 +320,7 @@ string leCodificacao(ifstream &file)
     return content;
 }
 
-// TO DO: Ler o texto do arquivo a ser comprimido
-void menu_compressao()
+void menu_compressao(bool tipo_algoritmo = false)
 {
     // Recebe o path do arquivo a comprimir
     cout << "Insira o path do arquivo a ser comprimido." << endl;
@@ -326,7 +345,7 @@ void menu_compressao()
     Arquivo arq;
     Huffman arv;
     No *result;
-    arq.gerarNos(nos, &tamanho, false, texto);
+    arq.gerarNos(nos, &tamanho, true, texto);
     ListaPrioridade *lista;
     if (tamanho >= 1) {
         lista = new ListaPrioridade(&nos[0]);
@@ -341,10 +360,10 @@ void menu_compressao()
     std::vector<Codigo> codes;
     arv.codificar(result, codes);
     // Abrir o arquivo codificado
-    ofstream file("comprimido.bin", ios::out | ios::binary);
+    ofstream file("compactado.bin", ios::out | ios::binary);
  
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
-    escreverCodificacao(codes, file, texto); // Escreve o texto codificado no arquivo
+    escreverCodificacao(codes, file, texto, true); // Escreve o texto codificado no arquivo
 
     file.close();
     if (!file.good()) {
@@ -352,10 +371,15 @@ void menu_compressao()
     }
 }
 
-void menu_descompressao()
+void menu_descompressao(bool tipo_algoritmo = false)
 {
     Huffman huff;
-    ifstream ifile("comprimido.bin", ios::out | ios::binary);
+    ifstream ifile("compactado.bin", ios::out | ios::binary);
+    if ( !ifile.is_open() ) {
+        cout << "Arquivo não encontrado." << endl;
+        return;
+    }
+
     No *arvore;
     arvore = new No();
 
@@ -367,8 +391,9 @@ void menu_descompressao()
         cout << "deu ruim!" << endl;
     }
 
-    cout << "Resultado decodificado: " << huff.decodificar(arvore, texto_codificado) << endl;
-    
+    ofstream outfile("descompactado.txt", ios::out | ios::binary);
+
+    outfile << huff.decodificar(arvore, texto_codificado, true);
 }
 
 int main() {

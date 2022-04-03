@@ -12,7 +12,7 @@ class Huffman{
         No *gerarArvore(ListaPrioridade *lista);
         void codificar_recursiva(No *raiz, std::string codigo, std::vector<Codigo> &codes);
         std::vector<Codigo> codificar(No *raiz, std::vector<Codigo> &codes);
-        std::string decodificar(No *raiz, std::string texto_codificado);
+        std::string decodificar(No *raiz, std::string texto_codificado, bool tipo_decodificacao);
 };
 
 #endif

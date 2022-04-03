@@ -43,28 +43,6 @@ void imprimir(No *no){
     }
 }
 
-// void escreveNo(No *raiz, ostream &out)
-// {
-//     if (raiz->ehFolha()) {
-//         // escreve "#"
-//         if ( !raiz->conteudo.empty() ) {
-//             out << raiz->conteudo << ";";
-//             out << raiz->frequencia << " ";
-
-//         } else {
-//             out << "# ";
-//         }
-
-//     } else {
-//         // escreve estrutura
-//         // cout << "conteúdo: " << raiz->conteudo << endl;
-//         out << raiz->conteudo << ";";
-//         out << raiz->frequencia << " ";
-//         escreveNo(raiz->esq, out);
-//         escreveNo(raiz->dir, out);
-//     }
-// }
-
 void escreveNo_recursiva(No *no, ostream &out)
 {
     int size = no->conteudo.length();
@@ -165,79 +143,6 @@ int findDelimiter(string str, char del)
     return -1;
 }
 
-// void carregaArvore_recursiva(No *arvore, vector<No*>::iterator current, vector<No*>::iterator end)
-// {
-//     No* novoNo;
-//     novoNo = new No();
-//     novoNo->conteudo = (*current)->conteudo;
-//     novoNo->frequencia = (*current)->frequencia;
-//     // cout << "conteúdo: " << (*current)->frequencia << endl;
-
-//     if ( current == end ) {
-//         return;
-//     }
-//     current++;
-
-//     if ( novoNo->conteudo.empty() ) {
-//         carregaArvore_recursiva(novoNo->esq, current, end);
-//         // *current++;
-//         carregaArvore_recursiva(novoNo->dir, current, end);
-//     }
-//     arvore = novoNo;
-
-//     return;
-
-//     cout << (*current)->frequencia << endl;
-
-//     // carregaArvore_recursiva(arvore, current, end);
-// }
-
-// No* leNo()
-// {
-//     No *raiz, *noAux;
-//     string str_arvore = ";6 ;2 a;1 s;1 ;4 e;2 t;2 ";
-//     std::vector<std::string> nos;
-//     std::vector<No*> nos_extraidos;
-
-//     nos = explode(str_arvore, ' ');
-//     for (std::string str : nos) {
-//         // cout << "index: " << str << endl;
-//         std::string conteudo = "";
-//         std::string frequencia = "";
-//         int del = findDelimiter(str, ';');
-//         if ( del > 0 ) {
-//             int i;
-//             for (i = 0; i < del; i++ ) {
-//                 conteudo += str[i];
-//             }
-//             for (i+=1; i < str.length(); i++ ) {
-//                 frequencia += str[i];
-//             }
-//         } else {
-//             if ( del != -1 ) {
-//                 str.erase(remove(str.begin(), str.end(), ';'), str.end());
-//                 // cout << "Frequência: " << str << endl;
-//                 frequencia = str;
-//             }
-//         }
-
-//         No *novoNo;
-//         novoNo = new No();
-
-//         novoNo->conteudo = conteudo;
-//         novoNo->frequencia = std::stoi(frequencia);
-
-//         nos_extraidos.push_back(novoNo);
-
-//         // cout << "Conteúdo: " << conteudo;
-//         // cout << " Frequência: " << frequencia << endl;
-//     }
-
-//     No *arvore;
-//     carregaArvore_recursiva(arvore, nos_extraidos.begin(), nos_extraidos.end());
-//     return arvore;
-// }
-
 /**
 *   Encontra o código no array de códigos a partir do conteúdo
 *
@@ -298,7 +203,6 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
 string Huffman::decodificar(No *raiz, std::string texto_codificado)
 {
     std::string texto_decodificado;
-    // std::string texto_codificado = "0010011110010010011101110111101101010111000110111100100010111101111100111000010011010011000010101000110101110101111001001011111110100011001101111000011110000011000011111001001111100111110010011111000111000111001101100110101011010100100001110111110100111111010100011010111010101011101110001110010011100011000011010100";
     texto_codificado += ";";
 
     std::string aux = texto_codificado;
@@ -399,13 +303,13 @@ string leCodificacao(ifstream &file)
 // TO DO: Ler o texto do arquivo a ser comprimido
 void menu_compressao()
 {
-    // Receber o path do arquivo a comprimir
+    // Recebe o path do arquivo a comprimir
     cout << "Insira o path do arquivo a ser comprimido." << endl;
     std::string path;
     ifstream original_file;
     cin >> path;
     original_file.open(path);
-    // Abrir o arquivo
+    // Abre o arquivo
     while (!original_file) {
         cout << "Arquivo não encontrado, insira o nome novamente." << endl;
         cin >> path;
@@ -413,13 +317,10 @@ void menu_compressao()
     }
 
     std::string texto;
-    // std::string conteudo;
     texto = leConteudo(original_file);
-    // cout << "Texto lido: " << texto << endl;
     // Carregar texto do arquivo
-    // texto = "um texto um pouco maior para ver se a avore gerada eh a mesma";
 
-    // Gerar a árvore binária a partir da string carregada
+    // Gera a árvore binária a partir da string carregada
     No nos[TAMANHO_ASCII];
     int tamanho;
     Arquivo arq;
@@ -441,11 +342,7 @@ void menu_compressao()
     arv.codificar(result, codes);
     // Abrir o arquivo codificado
     ofstream file("comprimido.bin", ios::out | ios::binary);
-    // ofstream file("comprimido.txt");
-    // if (!file) {
-    //     cout << "Não abriu..." << endl;
-    //     return 0;
-    // }
+ 
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
     escreverCodificacao(codes, file, texto); // Escreve o texto codificado no arquivo
 
@@ -453,31 +350,6 @@ void menu_compressao()
     if (!file.good()) {
         cout << "deu ruim!" << endl;
     }
-
-    // ifstream ifile("comprimido.bin", ios::out | ios::binary);
-    // std::string texto_codificado = leCodificacao(ifile);
-    // // cout << "Texto lido: " << texto_codificado << endl;
-    // ifile.close();
-    // if (!ifile.good()) {
-    //     cout << "deu ruim!" << endl;
-    // }
-
-    // ifstream ifi("comprimido.bin", ios::out | ios::binary);
-
-    // cout << "Arvore criada: " << endl;
-    // printArvore(result);
-    // No *arvoreCarregada;
-    // arvoreCarregada = new No();
-    // arvoreCarregada = carregaArvore(ifi);
-    // cout << endl << "Arvore carregada: " << endl;
-    // printArvore(arvoreCarregada);
-
-    // ifi.close();
-    // if (!ifi.good()) {
-    //     cout << "deu ruim!" << endl;
-    // }
-
-    // cout << "Resultado decodificado: " << arv.decodificar(result, texto_codificado) << endl;
 }
 
 void menu_descompressao()
@@ -503,66 +375,4 @@ int main() {
     menu_compressao();
     menu_descompressao();
     return 0;
-    ofstream out;
-    out.open("test.txt");
-
-    No nos[TAMANHO_ASCII];
-    int tamanho;
-    Arquivo arq;
-    Huffman arv;
-    No *result;
-    arq.gerarNos(nos, &tamanho, false, "arquivo que vai ser comprimido com sucessoehehehehheasdoasjdoiasescrevendo apenas algumas palavras nesse arquivopara testar o super algorítmo");
-    ListaPrioridade *lista;
-    if(tamanho >= 1){
-        lista = new ListaPrioridade(&nos[0]);
-        int i;
-        for(i = 1 ; i < tamanho; i++){
-            lista->inserirOrdenado(&nos[i]);
-        }
-        result = arv.gerarArvore(lista);
-
-        // escreveNo(result, arq.arq);
-
-        // Codificação
-        std::vector<Codigo> codes;
-        arv.codificar(result, codes);
-        // Escreve codificação no arquivo
-        escreverCodificacao(codes, arq.arq, "um texto um pouco maior para ver se a avore gerada eh a mesma");
-        // arq.escreverCodificacao(codes);
-
-        // Decodificação
-        // cout << "Resultado decodificado: " << arv.decodificar(result) << endl;
-
-        // printCodigos(codes);
-        printArvore(result);
-        // printArvore(teste);
-        // printArvore2(result);
-
-        // file.open("file.bin");
-
-        ofstream file("file.dat", ios::out | ios::binary);
-        if (!file) {
-            cout << "Não abriu..." << endl;
-            return -1;
-        }
-        escreveArvore(result, file);
-        file.close();
-        if (!file.good()) {
-            cout << "deu ruim!" << endl;
-        }
-
-        ifstream rfile("file.dat", ios::out | ios::binary);
-        if (!rfile) {
-            cout << "Não abriu..." << endl;
-            return -1;
-        }
-        No *arvoreCarregada;
-        arvoreCarregada = new No();
-        arvoreCarregada = carregaArvore(rfile);
-        rfile.close();
-        if ( !rfile.good() ) {
-            cout << "deu ruim!" << endl;
-        }
-        printArvore(arvoreCarregada);
-    }
 }

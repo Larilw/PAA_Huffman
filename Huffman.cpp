@@ -82,6 +82,7 @@ void escreveNo_recursiva(No *no, ostream &out)
 void escreveArvore(No *raiz, ostream &out)
 {
     escreveNo_recursiva(raiz, out);
+    out << endl << ";;--;;--;;" << endl;
 }
 
 void leNo_recursiva(ifstream &file, No *&no)
@@ -89,6 +90,20 @@ void leNo_recursiva(ifstream &file, No *&no)
     if (file.eof()) {
         return;
     }
+
+    char c;
+    int qtd = -1;
+    file.read((char*) &c, sizeof(char));
+    if ( c == '\n'  ) {
+        qtd--;
+        file.read((char*) &c, sizeof(char));
+        if ( c == ';' ) {
+            file.seekg(-2, std::ios::cur);
+            return;
+        }
+    }
+
+    file.seekg(qtd, std::ios::cur);
 
     No *novoNo;
     novoNo = new No();
@@ -118,6 +133,7 @@ No* carregaArvore(ifstream &file)
     No *raiz;
     raiz = new No();
 
+    file.seekg(0, file.beg);
     leNo_recursiva(file, raiz);
 
     return raiz;
@@ -279,10 +295,10 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
     }
 }
 
-string Huffman::decodificar(No *raiz)
+string Huffman::decodificar(No *raiz, std::string texto_codificado)
 {
     std::string texto_decodificado;
-    std::string texto_codificado = "111001111000";
+    // std::string texto_codificado = "0010011110010010011101110111101101010111000110111100100010111101111100111000010011010011000010101000110101110101111001001011111110100011001101111000011110000011000011111001001111100111110010011111000111000111001101100110101011010100100001110111110100111111010100011010111010101011101110001110010011100011000011010100";
     texto_codificado += ";";
 
     std::string aux = texto_codificado;
@@ -315,16 +331,15 @@ string Huffman::decodificar(No *raiz)
     return texto_decodificado;
 }
 
-void escreverCodificacao(std::vector<Codigo> codes, ofstream &out)
+void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str)
 {
     int i;
-    std::string str = "um texto um pouco maior para ver se a avore gerada eh a mesma";
 
     // Move para o final do arquivo
     out.seekp(0, ios::end);
     
     // Escreve \n
-    out << endl;
+    // out << endl;
 
     for (int i=0; i < str.length(); i++) {
         string s(1, str[i]);
@@ -354,6 +369,34 @@ void printArvore2(No *raiz)
     printArvore2(raiz->dir);
 }
 
+string leConteudo(ifstream &input)
+{
+    string tp;
+    string content;
+    while(getline(input, tp)) {
+        content += tp;
+    }
+
+    return content;
+}
+
+string leCodificacao(ifstream &file)
+{
+    string tp = "";
+    string content;
+    // Skiping to encoded content
+    while (tp != ";;--;;--;;") {
+        getline(file, tp);
+    }
+    // Reading encoded content
+    while(getline(file, tp)) {
+        content += tp;
+    }
+
+    return content;
+}
+
+// TO DO: Ler o texto do arquivo a ser comprimido
 void menu_compressao()
 {
     // Receber o path do arquivo a comprimir
@@ -370,8 +413,11 @@ void menu_compressao()
     }
 
     std::string texto;
+    // std::string conteudo;
+    texto = leConteudo(original_file);
+    // cout << "Texto lido: " << texto << endl;
     // Carregar texto do arquivo
-    texto = "um texto um pouco maior para ver se a avore gerada eh a mesma";
+    // texto = "um texto um pouco maior para ver se a avore gerada eh a mesma";
 
     // Gerar a árvore binária a partir da string carregada
     No nos[TAMANHO_ASCII];
@@ -395,25 +441,67 @@ void menu_compressao()
     arv.codificar(result, codes);
     // Abrir o arquivo codificado
     ofstream file("comprimido.bin", ios::out | ios::binary);
+    // ofstream file("comprimido.txt");
     // if (!file) {
     //     cout << "Não abriu..." << endl;
     //     return 0;
     // }
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
-    escreverCodificacao(codes, file);
-    
-    printArvore(result);
-    cout << endl;
-    // file.close();
-    // if (!file.good()) {
+    escreverCodificacao(codes, file, texto); // Escreve o texto codificado no arquivo
+
+    file.close();
+    if (!file.good()) {
+        cout << "deu ruim!" << endl;
+    }
+
+    // ifstream ifile("comprimido.bin", ios::out | ios::binary);
+    // std::string texto_codificado = leCodificacao(ifile);
+    // // cout << "Texto lido: " << texto_codificado << endl;
+    // ifile.close();
+    // if (!ifile.good()) {
     //     cout << "deu ruim!" << endl;
     // }
+
+    // ifstream ifi("comprimido.bin", ios::out | ios::binary);
+
+    // cout << "Arvore criada: " << endl;
+    // printArvore(result);
+    // No *arvoreCarregada;
+    // arvoreCarregada = new No();
+    // arvoreCarregada = carregaArvore(ifi);
+    // cout << endl << "Arvore carregada: " << endl;
+    // printArvore(arvoreCarregada);
+
+    // ifi.close();
+    // if (!ifi.good()) {
+    //     cout << "deu ruim!" << endl;
+    // }
+
+    // cout << "Resultado decodificado: " << arv.decodificar(result, texto_codificado) << endl;
+}
+
+void menu_descompressao()
+{
+    Huffman huff;
+    ifstream ifile("comprimido.bin", ios::out | ios::binary);
+    No *arvore;
+    arvore = new No();
+
+    arvore = carregaArvore(ifile);
+    std::string texto_codificado = leCodificacao(ifile);
+
+    ifile.close();
+    if (!ifile.good()) {
+        cout << "deu ruim!" << endl;
+    }
+
+    cout << "Resultado decodificado: " << huff.decodificar(arvore, texto_codificado) << endl;
     
-    // escreverCodificacao(codes, arq.arq); // Salvar o código de codificação no arquivo codificado
 }
 
 int main() {
     menu_compressao();
+    menu_descompressao();
     return 0;
     ofstream out;
     out.open("test.txt");
@@ -423,7 +511,7 @@ int main() {
     Arquivo arq;
     Huffman arv;
     No *result;
-    arq.gerarNos(nos, &tamanho, false, "um texto um pouco maior para ver se a avore gerada eh a mesma");
+    arq.gerarNos(nos, &tamanho, false, "arquivo que vai ser comprimido com sucessoehehehehheasdoasjdoiasescrevendo apenas algumas palavras nesse arquivopara testar o super algorítmo");
     ListaPrioridade *lista;
     if(tamanho >= 1){
         lista = new ListaPrioridade(&nos[0]);
@@ -439,11 +527,11 @@ int main() {
         std::vector<Codigo> codes;
         arv.codificar(result, codes);
         // Escreve codificação no arquivo
-        escreverCodificacao(codes, arq.arq);
+        escreverCodificacao(codes, arq.arq, "um texto um pouco maior para ver se a avore gerada eh a mesma");
         // arq.escreverCodificacao(codes);
 
         // Decodificação
-        cout << "Resultado decodificado: " << arv.decodificar(result) << endl;
+        // cout << "Resultado decodificado: " << arv.decodificar(result) << endl;
 
         // printCodigos(codes);
         printArvore(result);

@@ -12,4 +12,6 @@ using namespace std;
 #define KEY_DOWN 115
 #define KEY_ENTER 13
 
+void tratarMenuPrincipal();
+
 #endif

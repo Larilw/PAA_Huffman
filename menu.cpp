@@ -172,8 +172,3 @@ void tratarMenuPrincipal(){
         }
     }
 }
-/*
-int main(){
-    tratarMenuPrincipal();
-}
-*/

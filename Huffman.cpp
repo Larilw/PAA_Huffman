@@ -103,36 +103,3 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
         codificar_recursiva(raiz->dir, codigo + "1", codes);
     }
 }
-/*
-int main() {
-    ofstream out;
-    out.open("test.txt");
-
-    No nos[TAMANHO_ASCII];
-    int tamanho;
-    Arquivo arq;
-    Huffman arv;
-    No *result;
-    arq.gerarNos(nos, &tamanho, false);
-    ListaPrioridade *lista;
-    if(tamanho >= 1){
-        lista = new ListaPrioridade(&nos[0]);
-        int i;
-        for(i = 1 ; i < tamanho; i++){
-            lista->inserirOrdenado(&nos[i]);
-        }
-        result = arv.gerarArvore(lista);
-        // cout << "Meu print:" << endl;
-        // No *teste;
-        // teste = result;
-        // for (i=0; i < 3; i++) {
-        //     cout << "alo:" << endl;
-        //     cout << teste->conteudo << endl;
-        //     teste = teste->dir;
-        // }
-        // printArvore(result);
-        arv.codificar(result);
-        escreveNo(result, out);
-    }
-}
-*/

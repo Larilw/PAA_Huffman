@@ -274,6 +274,52 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
     }
 }
 
+void escreverCodificacao2(std::vector<Codigo> codes, ofstream &out, string str, bool tipoCodificacao)
+{
+    int i;
+
+    // Move para o final do arquivo
+    out.seekp(0, ios::end);
+    
+    // Escreve \n
+    // out << endl;
+
+    // Codificação por caractere
+    if ( tipoCodificacao == false ) {
+        for (int i=0; i < str.length(); i++) {
+            string s(1, str[i]);
+            int index = findCodigo(codes, s);
+            if ( index != -1 ) {
+                out << codes[index].getCodigo();
+            }
+        }
+    // Codificação por palavra
+    } else {
+
+        std::string line;
+        std::stringstream ss(str);
+
+        while(std::getline(ss, line)) {
+            string word;
+            stringstream iss(line);
+    
+            while (iss >> word) {
+                int index = findCodigo(codes, word);
+                if ( index != -1 ) {
+                    // cout << "código:" << codes[index].getCodigo() << endl;
+                    out << codes[index].getCodigo();
+                }
+            }
+
+            int index = findCodigo(codes, "\n");
+            if ( index != -1 ) {
+                out << codes[index].getCodigo();
+            }
+        }
+
+    }
+}
+
 void printCodigos(std::vector<Codigo> codes)
 {
     for (auto it = begin (codes); it != end (codes); ++it) {
@@ -364,7 +410,8 @@ void menu_compressao(bool tipo_algoritmo = false)
     ofstream file("compactado.bin", ios::out | ios::binary);
  
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
-    escreverCodificacao(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
+    escreverCodificacao2(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
+    printArvore(result);
 
     file.close();
     if (!file.good()) {
@@ -386,6 +433,8 @@ void menu_descompressao(bool tipo_algoritmo = false)
 
     arvore = carregaArvore(ifile);
     std::string texto_codificado = leCodificacao(ifile);
+    // cout << "texto_codificado:" << endl;
+    // cout << texto_codificado << endl;
 
     ifile.close();
     if (!ifile.good()) {
@@ -398,7 +447,7 @@ void menu_descompressao(bool tipo_algoritmo = false)
 }
 
 int main() {
-    menu_compressao(false);
-    menu_descompressao(false);
+    menu_compressao(true);
+    menu_descompressao(true);
     return 0;
 }

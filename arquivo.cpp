@@ -83,7 +83,51 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
     }
 }
 
+void contarPalavras2(string conteudoArq, Simbolo simbolos[]) {
+    std::string buf;
+    std::stringstream ss(conteudoArq);
+
+    std::vector<std::string> tokens;
+
+    while(std::getline(ss, buf)) {
+
+        string word;
+        stringstream iss(buf);
+ 
+        while (iss >> word) {
+            int i;
+            i = encontrarPalavra(simbolos, word);
+            if ( i >= 0 ) {
+                simbolos[i].simbolo = word;
+                simbolos[i].nAparicoes++;
+            } else {
+                int pos = ultimaPosicao(simbolos);
+                simbolos[pos].simbolo = word;
+                simbolos[pos].nAparicoes++;
+            }
+        }
+
+        int i;
+        i = encontrarPalavra(simbolos, "\n");
+        if ( i >= 0 ) {
+            simbolos[i].simbolo = "\n";
+            simbolos[i].nAparicoes++;
+        } else {
+            int pos = ultimaPosicao(simbolos);
+            simbolos[pos].simbolo = "\n";
+            simbolos[pos].nAparicoes++;
+        }
+    }
+
+    // for ( int i = 0; i < 1000; i++ ) {
+    //     cout << "simbolo: " << simbolos[i].simbolo << endl;
+    // }
+}
+
 void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
+    string line;
+    stringstream ss(conteudoArq);
+
     string word;
  
     stringstream iss(conteudoArq);
@@ -117,7 +161,7 @@ void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto
         contarAparicoes(texto, simbolos, tipoCodificacao);
 
     } else {
-        contarPalavras(texto, simbolos);
+        contarPalavras2(texto, simbolos);
     }
 
     removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);

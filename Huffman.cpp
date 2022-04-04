@@ -1,6 +1,7 @@
 #include "Huffman.h"
 #include <fstream>
 #include <algorithm>
+#include <bitset>
 
 bool levelOrder(No *no, int level){
     if(no == NULL){
@@ -239,6 +240,23 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_de
     return texto_decodificado;
 }
 
+uint8_t ucharToBitArray(char bits[8], uint8_t c)
+{
+   for(uint8_t i=0; i<8; i++)
+   {
+     if(c & (1<<i))
+     {
+       bits[7-i] = '1';
+     }
+     else
+     {
+       bits[7-i] = '0';
+     }
+   }
+
+   return c;
+}
+
 void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, bool tipoCodificacao)
 {
     int i;
@@ -249,13 +267,24 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
     // Escreve \n
     // out << endl;
 
+    std::string texto_codificado;
+
     // Codificação por caractere
     if ( tipoCodificacao == false ) {
         for (int i=0; i < str.length(); i++) {
             string s(1, str[i]);
             int index = findCodigo(codes, s);
             if ( index != -1 ) {
-                out << codes[index].getCodigo();
+                // out << codes[index].getCodigo();
+                texto_codificado += codes[index].getCodigo();
+                // cout << "CÓDIGO: " << codigo << endl;
+                // cout << "ENTROUUU!!!! " << endl;
+                // for (int j=0; j < codigo.length(); j++) {
+                //     char bin = codigo[j];
+                //     // Write in binary
+                //     cout << "CÓDIGO: " << bin << endl;
+                //     out.write((char *) &bin, 1);
+                // }
             }
         }
     // Codificação por palavra
@@ -271,6 +300,28 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
                 out << codes[index].getCodigo();
             }
         }
+    }
+
+    int j = 0;
+    std::string bits;
+    for ( int i=0; i < texto_codificado.length(); i++) {
+        // unsigned char byte;
+        // char bits[8];
+        // bits[j] = texto_codificado[i];
+        if ( i % 8 == 0 && i != 0 ) {
+            // byte = ucharToBitArray(bits, byte);
+            // bits[0] = 0;
+            // cout << "byte: " << byte << endl;
+            // j=0;
+            cout << "bits: " << bits << endl;
+            std::bitset<8> byte(bits);
+            unsigned char n = byte.to_ulong();
+            // cout << "texto codificado:" << texto_codificado << endl;
+            // cout << "alo:" << (int) n << endl;
+            out.write(reinterpret_cast<const char*>(&n), sizeof(n));
+            bits = "";
+        }
+        bits += texto_codificado[i];
     }
 }
 
@@ -360,9 +411,20 @@ string leCodificacao(ifstream &file)
         getline(file, tp);
     }
     // Reading encoded content
-    while(getline(file, tp)) {
-        content += tp;
+    // while(getline(file, tp)) {
+    //     content += tp;
+    // }
+    while (!file.eof()) {
+        std::bitset<8> byte;
+        unsigned char n;
+        file.read( reinterpret_cast<char*>(&n), sizeof(n) );
+        cout << "n: " << n << endl;
+        byte = n;
+
+        content += byte.to_string();
     }
+
+    // cout << "Content:" << content << endl;
 
     return content;
 }
@@ -410,7 +472,7 @@ void menu_compressao(bool tipo_algoritmo = false)
     ofstream file("compactado.bin", ios::out | ios::binary);
  
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
-    escreverCodificacao2(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
+    escreverCodificacao(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
     printArvore(result);
 
     file.close();
@@ -433,8 +495,6 @@ void menu_descompressao(bool tipo_algoritmo = false)
 
     arvore = carregaArvore(ifile);
     std::string texto_codificado = leCodificacao(ifile);
-    // cout << "texto_codificado:" << endl;
-    // cout << texto_codificado << endl;
 
     ifile.close();
     if (!ifile.good()) {
@@ -447,7 +507,7 @@ void menu_descompressao(bool tipo_algoritmo = false)
 }
 
 int main() {
-    menu_compressao(true);
-    menu_descompressao(true);
+    menu_compressao(false);
+    menu_descompressao(false);
     return 0;
 }

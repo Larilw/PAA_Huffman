@@ -257,6 +257,29 @@ uint8_t ucharToBitArray(char bits[8], uint8_t c)
    return c;
 }
 
+int findFOC(ifstream &file)
+{
+    int i = 0;
+    while (!file.eof()) {
+        char c;
+        file.get(c);
+        if ( c == 'F' ) {
+            file.get(c);
+            i++;
+            if ( c == 'O' ) {
+                file.get(c);
+                i++;
+                if ( c == 'C' ) {
+                    return i;
+                }
+            }
+        }
+        i++;
+    }
+
+    return -1;
+}
+
 void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, bool tipoCodificacao)
 {
     int i;
@@ -275,78 +298,11 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
             string s(1, str[i]);
             int index = findCodigo(codes, s);
             if ( index != -1 ) {
-                // out << codes[index].getCodigo();
                 texto_codificado += codes[index].getCodigo();
-                // cout << "CÓDIGO: " << codigo << endl;
-                // cout << "ENTROUUU!!!! " << endl;
-                // for (int j=0; j < codigo.length(); j++) {
-                //     char bin = codigo[j];
-                //     // Write in binary
-                //     cout << "CÓDIGO: " << bin << endl;
-                //     out.write((char *) &bin, 1);
-                // }
             }
         }
     // Codificação por palavra
     } else {
-        string word;
- 
-        stringstream iss(str);
- 
-        while (iss >> word) {
-            int index = findCodigo(codes, word);
-            if ( index != -1 ) {
-                // cout << "código:" << codes[index].getCodigo() << endl;
-                out << codes[index].getCodigo();
-            }
-        }
-    }
-
-    int j = 0;
-    std::string bits;
-    for ( int i=0; i < texto_codificado.length(); i++) {
-        // unsigned char byte;
-        // char bits[8];
-        // bits[j] = texto_codificado[i];
-        if ( i % 8 == 0 && i != 0 ) {
-            // byte = ucharToBitArray(bits, byte);
-            // bits[0] = 0;
-            // cout << "byte: " << byte << endl;
-            // j=0;
-            cout << "bits: " << bits << endl;
-            std::bitset<8> byte(bits);
-            unsigned char n = byte.to_ulong();
-            // cout << "texto codificado:" << texto_codificado << endl;
-            // cout << "alo:" << (int) n << endl;
-            out.write(reinterpret_cast<const char*>(&n), sizeof(n));
-            bits = "";
-        }
-        bits += texto_codificado[i];
-    }
-}
-
-void escreverCodificacao2(std::vector<Codigo> codes, ofstream &out, string str, bool tipoCodificacao)
-{
-    int i;
-
-    // Move para o final do arquivo
-    out.seekp(0, ios::end);
-    
-    // Escreve \n
-    // out << endl;
-
-    // Codificação por caractere
-    if ( tipoCodificacao == false ) {
-        for (int i=0; i < str.length(); i++) {
-            string s(1, str[i]);
-            int index = findCodigo(codes, s);
-            if ( index != -1 ) {
-                out << codes[index].getCodigo();
-            }
-        }
-    // Codificação por palavra
-    } else {
-
         std::string line;
         std::stringstream ss(str);
 
@@ -357,17 +313,39 @@ void escreverCodificacao2(std::vector<Codigo> codes, ofstream &out, string str, 
             while (iss >> word) {
                 int index = findCodigo(codes, word);
                 if ( index != -1 ) {
-                    // cout << "código:" << codes[index].getCodigo() << endl;
-                    out << codes[index].getCodigo();
+                    texto_codificado += codes[index].getCodigo();
                 }
             }
 
             int index = findCodigo(codes, "\n");
             if ( index != -1 ) {
-                out << codes[index].getCodigo();
+                texto_codificado += codes[index].getCodigo();
             }
         }
+    }
 
+    int j = 0;
+    std::string bits;
+
+    // cout << "Texto codificado: " << texto_codificado << endl;
+    for ( int i=0; i < texto_codificado.length(); i++) {
+
+        if ( i % 8 == 0 && i != 0 ) {
+            std::bitset<8> byte(bits);
+            unsigned char n = byte.to_ulong();
+            out.write(reinterpret_cast<const char*>(&n), sizeof(n));
+            bits = "";
+
+        } else if ( i == texto_codificado.length() -1 ) {
+            // out << endl;
+            out << "FOC";
+            for (int j = 0; j < bits.length(); j++) {
+                out << bits[j];
+            }
+            // out << endl;
+        }
+
+        bits += texto_codificado[i];
     }
 }
 
@@ -402,29 +380,58 @@ string leConteudo(ifstream &input)
     return content;
 }
 
+bool is_OFC(ifstream &file)
+{
+    unsigned char n;
+    file.read( reinterpret_cast<char*>(&n), sizeof(n) );
+    if ( n == 'O' ) {
+        file.read( reinterpret_cast<char*>(&n), sizeof(n) );
+        if ( n == 'C' ) {
+            return true;
+        }
+    }
+
+    file.seekg(-1, std::ios::cur);
+    return false;
+}
+
+string getOFC(ifstream &file)
+{
+    std::string str = "";
+    unsigned char n;
+    while (!file.eof()) {
+        file.read( reinterpret_cast<char*>(&n), sizeof(n) );
+        str += n;
+    }
+
+    return str;
+}
+
 string leCodificacao(ifstream &file)
 {
     string tp = "";
     string content;
+
     // Skiping to encoded content
     while (tp != ";;--;;--;;") {
         getline(file, tp);
     }
-    // Reading encoded content
-    // while(getline(file, tp)) {
-    //     content += tp;
-    // }
+
     while (!file.eof()) {
         std::bitset<8> byte;
         unsigned char n;
         file.read( reinterpret_cast<char*>(&n), sizeof(n) );
-        cout << "n: " << n << endl;
         byte = n;
+
+        if ( n == 'F' ) {
+            if ( is_OFC(file) ) {
+                content += getOFC(file);
+                break;
+            }
+        }
 
         content += byte.to_string();
     }
-
-    // cout << "Content:" << content << endl;
 
     return content;
 }
@@ -444,12 +451,19 @@ void menu_compressao(bool tipo_algoritmo = false)
         original_file.open(path);
     }
 
+    cout << "Compactação iniciada" << endl;
+
     std::string texto;
     texto = leConteudo(original_file);
     // Carregar texto do arquivo
-
+    int tam;
+    if ( tipo_algoritmo == false ) {
+        tam = TAMANHO_ASCII;
+    } else {
+        tam = TAMANHO_PALAVRAS;
+    }
     // Gera a árvore binária a partir da string carregada
-    No nos[TAMANHO_ASCII];
+    No nos[tam];
     int tamanho;
     Arquivo arq;
     Huffman arv;
@@ -470,15 +484,16 @@ void menu_compressao(bool tipo_algoritmo = false)
     arv.codificar(result, codes);
     // Abrir o arquivo codificado
     ofstream file("compactado.bin", ios::out | ios::binary);
- 
+
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
     escreverCodificacao(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
-    printArvore(result);
 
     file.close();
     if (!file.good()) {
-        cout << "deu ruim!" << endl;
+        // cout << "deu ruim!" << endl;
     }
+
+    cout << "Arquivo compactado com sucesso." << endl;
 }
 
 void menu_descompressao(bool tipo_algoritmo = false)
@@ -498,7 +513,7 @@ void menu_descompressao(bool tipo_algoritmo = false)
 
     ifile.close();
     if (!ifile.good()) {
-        cout << "deu ruim!" << endl;
+        // cout << "deu ruim!" << endl;
     }
 
     ofstream outfile("descompactado.txt", ios::out | ios::binary);
@@ -507,7 +522,7 @@ void menu_descompressao(bool tipo_algoritmo = false)
 }
 
 int main() {
-    menu_compressao(false);
-    menu_descompressao(false);
+    menu_compressao(true);
+    menu_descompressao(true);
     return 0;
 }

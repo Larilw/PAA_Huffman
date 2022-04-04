@@ -83,7 +83,7 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
     }
 }
 
-void contarPalavras2(string conteudoArq, Simbolo simbolos[]) {
+void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
     std::string buf;
     std::stringstream ss(conteudoArq);
 
@@ -104,6 +104,7 @@ void contarPalavras2(string conteudoArq, Simbolo simbolos[]) {
                 int pos = ultimaPosicao(simbolos);
                 simbolos[pos].simbolo = word;
                 simbolos[pos].nAparicoes++;
+                (*n)++;
             }
         }
 
@@ -116,35 +117,32 @@ void contarPalavras2(string conteudoArq, Simbolo simbolos[]) {
             int pos = ultimaPosicao(simbolos);
             simbolos[pos].simbolo = "\n";
             simbolos[pos].nAparicoes++;
-        }
-    }
-
-    // for ( int i = 0; i < 1000; i++ ) {
-    //     cout << "simbolo: " << simbolos[i].simbolo << endl;
-    // }
-}
-
-void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
-    string line;
-    stringstream ss(conteudoArq);
-
-    string word;
- 
-    stringstream iss(conteudoArq);
- 
-    while (iss >> word) {
-        int i;
-        i = encontrarPalavra(simbolos, word);
-        if ( i >= 0 ) {
-            simbolos[i].simbolo = word;
-            simbolos[i].nAparicoes++;
-        } else {
-            int pos = ultimaPosicao(simbolos);
-            simbolos[pos].simbolo = word;
-            simbolos[pos].nAparicoes++;
+            (*n)++;
         }
     }
 }
+
+// void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
+//     string line;
+//     stringstream ss(conteudoArq);
+
+//     string word;
+ 
+//     stringstream iss(conteudoArq);
+ 
+//     while (iss >> word) {
+//         int i;
+//         i = encontrarPalavra(simbolos, word);
+//         if ( i >= 0 ) {
+//             simbolos[i].simbolo = word;
+//             simbolos[i].nAparicoes++;
+//         } else {
+//             int pos = ultimaPosicao(simbolos);
+//             simbolos[pos].simbolo = word;
+//             simbolos[pos].nAparicoes++;
+//         }
+//     }
+// }
 
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto){
 
@@ -156,14 +154,19 @@ void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto
     }
 
     Simbolo simbolos[tam];
+    int n = 0;
 
     if ( tipoCodificacao == false ) {
         contarAparicoes(texto, simbolos, tipoCodificacao);
 
     } else {
-        contarPalavras2(texto, simbolos);
+        contarPalavras(texto, simbolos, &n);
     }
 
-    removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
+    if ( n == 0 ) {
+        n = TAMANHO_ASCII;
+    }
+
+    removerNulos(simbolos, nos, n, tamNos);
     ordenarSimbolos(nos, *tamNos);
 }

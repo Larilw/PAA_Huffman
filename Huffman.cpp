@@ -103,7 +103,7 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
         codificar_recursiva(raiz->dir, codigo + "1", codes);
     }
 }
-
+/*
 int main() {
     ofstream out;
     out.open("test.txt");
@@ -135,3 +135,4 @@ int main() {
         escreveNo(result, out);
     }
 }
+*/

@@ -5,11 +5,8 @@
 #include "constantes.h"
 #include <string>
 #include <iostream>
-<<<<<<< HEAD
 #include <string.h>
-=======
 #include <sstream>
->>>>>>> f7f18832876d1c9c54e5f099ca7b79635965d10b
 using namespace std;
 
 

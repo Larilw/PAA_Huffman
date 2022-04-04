@@ -75,12 +75,20 @@ void tratarMenuCompressao(){
         else if(pos == 3){
             if(posMenu == 0){
                 cout<<"Comprimir por caractere"<<endl;
+                auto begin = std::chrono::high_resolution_clock::now();
                 //comprimir por caractere
+                auto end = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+                cout<<"Tempo de compressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
                 break;
             }
             else if(posMenu == 1){
                 cout<<"Comprimir por palavra"<<endl;
+                auto begin = std::chrono::high_resolution_clock::now();
                 //comprimir por palavra
+                auto end = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+                cout<<"Tempo de compressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
                 break;
             }
             else if(posMenu == 2){
@@ -109,12 +117,20 @@ void tratarMenuDescompressao(){
         else if(pos == 3){
             if(posMenu == 0){
                 cout<<"Descomprimir por caractere"<<endl;
+                auto begin = std::chrono::high_resolution_clock::now();
                 //descomprimir por caractere
+                auto end = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+                cout<<"Tempo de descompressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
                 break;
             }
             else if(posMenu == 1){
                 cout<<"Descomprimir por palavra"<<endl;
+                auto begin = std::chrono::high_resolution_clock::now();
                 //descomprimir por palavra 
+                auto end = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+                cout<<"Tempo de descompressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
                 break;
             }
             else if(posMenu == 2){
@@ -156,7 +172,8 @@ void tratarMenuPrincipal(){
         }
     }
 }
-
+/*
 int main(){
     tratarMenuPrincipal();
 }
+*/

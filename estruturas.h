@@ -18,7 +18,6 @@ class No{
 };
 
 class Arvore{
-    // private:
 
     public:
         No *raiz;

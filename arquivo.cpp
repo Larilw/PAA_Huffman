@@ -81,6 +81,9 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoC
             simbolos[pos].nAparicoes++;
         }
     }
+    else{
+        
+    }
 }
 
 void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
@@ -121,6 +124,7 @@ void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
         }
     }
 }
+
 
 // void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
 //     string line;
@@ -168,5 +172,12 @@ void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto
     }
 
     removerNulos(simbolos, nos, n, tamNos);
+
+void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
+    Simbolo simbolos[TAMANHO_ASCII];
+    string arquivo;
+    arquivo = "abacaxi nao \n";
+    contarAparicoes(arquivo, simbolos, tipoCodificacao);
+    removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);
 }

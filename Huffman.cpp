@@ -201,6 +201,7 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
     }
 }
 
+
 string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_decodificacao)
 {
     std::string texto_decodificado;
@@ -526,3 +527,4 @@ int main() {
     menu_descompressao(true);
     return 0;
 }
+

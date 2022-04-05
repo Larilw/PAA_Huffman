@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <cctype>
 #include <chrono>
+#include "Huffman.h"
 using namespace std;
 
 #define KEY_UP 119

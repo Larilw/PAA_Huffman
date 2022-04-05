@@ -396,22 +396,16 @@ string leCodificacao(ifstream &file)
     return content;
 }
 
-void menu_compressao(bool tipo_algoritmo = false)
+void menu_compressao(std::string path_arquivo, bool tipo_algoritmo)
 {
-    // Recebe o path do arquivo a comprimir
-    cout << "Insira o path do arquivo a ser comprimido." << endl;
-    std::string path;
     ifstream original_file;
-    cin >> path;
-    original_file.open(path);
-    // Abre o arquivo
-    while (!original_file) {
-        cout << "Arquivo não encontrado, insira o nome novamente." << endl;
-        cin >> path;
-        original_file.open(path);
-    }
+    std::string path_original = path_arquivo;
+    std::string path_compactado = path_arquivo;
+    path_arquivo += ".txt";
+    path_compactado += "-compactado.bin";
+    original_file.open(path_arquivo);
 
-    cout << "Compactação iniciada" << endl;
+    cout << "Compactacao iniciada" << endl;
 
     std::string texto;
     texto = leConteudo(original_file);
@@ -443,7 +437,7 @@ void menu_compressao(bool tipo_algoritmo = false)
     std::vector<Codigo> codes;
     arv.codificar(result, codes);
     // Abrir o arquivo codificado
-    ofstream file("compactado.bin", ios::out | ios::binary);
+    ofstream file(path_compactado, ios::out | ios::binary);
 
     escreveArvore(result, file); // Salvar a árvore no arquivo codificado
     escreverCodificacao(codes, file, texto, tipo_algoritmo); // Escreve o texto codificado no arquivo
@@ -456,29 +450,37 @@ void menu_compressao(bool tipo_algoritmo = false)
     cout << "Arquivo compactado com sucesso." << endl;
 }
 
-void menu_descompressao(bool tipo_algoritmo = false)
+void menu_descompressao(std::string path_arquivo, bool tipo_algoritmo)
 {
+
+    cout << "Descompactacao iniciada" << endl;
+
+    std::string path_compactado;
+    std::string path_descompactado;
+    path_compactado = path_arquivo;
+    path_compactado += "-compactado.bin";
+
+    ifstream compressed_file(path_compactado, ios::out | ios::binary);
+
     Huffman huff;
-    ifstream ifile("compactado.bin", ios::out | ios::binary);
-    if ( !ifile.is_open() ) {
-        cout << "Arquivo não encontrado." << endl;
-        return;
-    }
 
     No *arvore;
     arvore = new No();
 
-    arvore = carregaArvore(ifile);
-    std::string texto_codificado = leCodificacao(ifile);
+    arvore = carregaArvore(compressed_file);
+    std::string texto_codificado = leCodificacao(compressed_file);
 
-    ifile.close();
-    if (!ifile.good()) {
-        // cout << "deu ruim!" << endl;
-    }
+    compressed_file.close();
 
-    ofstream outfile("descompactado.txt", ios::out | ios::binary);
+    path_descompactado = path_arquivo;
+    path_descompactado += "-descompactado.txt";
+
+    ofstream outfile(path_descompactado, ios::out | ios::binary);
 
     outfile << huff.decodificar(arvore, texto_codificado, tipo_algoritmo);
-}
 
+    outfile.close();
+
+    cout << "Arquivo descompactado com sucesso" << endl;
+}
 

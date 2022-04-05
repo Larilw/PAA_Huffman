@@ -1,5 +1,33 @@
 #include "menu.h"
 
+void lerNomeArquivo(string *path, bool operacao){
+    cout<<"Insira o caminho do arquivo sem a extensao" << endl;
+    ifstream original_file;
+    std::string arq;
+    cin >> *path;
+    if(operacao == false){
+        arq = *path + ".txt";
+    }
+    else{
+        arq = *path + ".bin";
+    }
+    original_file.open(arq);
+
+    while(!original_file){
+        cout<<"Arquivo nao encontrado, insira o caminho novamente."<<endl;
+        cin >>*path;
+        if(operacao == false){
+            arq = *path + ".txt";
+        }
+        else{
+            arq = *path + ".bin";
+        }
+        original_file.open(arq);
+    }
+    original_file.close();
+}
+
+
 void imprimirOpcaoSelecionada(int pos, int posImprimir, string mensagem){
     if(pos == posImprimir){
         cout<<"* ";
@@ -59,6 +87,7 @@ void gerarMenuDescompressao(int pos){
 
 void tratarMenuCompressao(){
     int pos, posMenu = 0;
+    std::string path;
     while(true){
         gerarMenuCompressao(posMenu);
         pos = obterPosicao();
@@ -76,7 +105,8 @@ void tratarMenuCompressao(){
             if(posMenu == 0){
                 cout<<"Comprimir por caractere"<<endl;
                 auto begin = std::chrono::high_resolution_clock::now();
-                //comprimir por caractere
+                lerNomeArquivo(&path, false);
+                menu_compressao(path, false);
                 auto end = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
                 cout<<"Tempo de compressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
@@ -85,7 +115,8 @@ void tratarMenuCompressao(){
             else if(posMenu == 1){
                 cout<<"Comprimir por palavra"<<endl;
                 auto begin = std::chrono::high_resolution_clock::now();
-                //comprimir por palavra
+                lerNomeArquivo(&path, false);
+                menu_compressao(path, true);
                 auto end = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
                 cout<<"Tempo de compressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
@@ -101,6 +132,7 @@ void tratarMenuCompressao(){
 
 void tratarMenuDescompressao(){
     int pos, posMenu = 0;
+    std::string path;
     while(true){
         gerarMenuDescompressao(posMenu);
         pos = obterPosicao();
@@ -118,7 +150,8 @@ void tratarMenuDescompressao(){
             if(posMenu == 0){
                 cout<<"Descomprimir por caractere"<<endl;
                 auto begin = std::chrono::high_resolution_clock::now();
-                //descomprimir por caractere
+                lerNomeArquivo(&path, true);
+                menu_descompressao(path, false);
                 auto end = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
                 cout<<"Tempo de descompressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;
@@ -127,7 +160,8 @@ void tratarMenuDescompressao(){
             else if(posMenu == 1){
                 cout<<"Descomprimir por palavra"<<endl;
                 auto begin = std::chrono::high_resolution_clock::now();
-                //descomprimir por palavra 
+                lerNomeArquivo(&path, true);
+                menu_descompressao(path, true);
                 auto end = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
                 cout<<"Tempo de descompressao: "<<elapsed.count() * 1e-9<<" segundo(s)"<<endl;

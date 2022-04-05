@@ -214,9 +214,10 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_de
     while ( i < aux.size() ) {
         if ( noAux->ehFolha() ) {
             texto_decodificado += noAux->conteudo;
+          
             noAux = raiz;
 
-            if ( tipo_decodificacao == true ) {
+            if ( tipo_decodificacao == true && texto_decodificado.back() != '\n') {
                 texto_decodificado += " ";
             }
 
@@ -535,7 +536,7 @@ void menu_descompressao(bool tipo_algoritmo = false)
 }
 
 int main() {
-    menu_compressao(false);
-    menu_descompressao(false);
+    menu_compressao(true);
+    menu_descompressao(true);
     return 0;
 }

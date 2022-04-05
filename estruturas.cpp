@@ -1,4 +1,6 @@
 #include "estruturas.h"
+#include <vector>
+#include <algorithm>
 
 No::No(string conteudo, int frequencia, No *esq, No *dir){
     this->conteudo = conteudo;
@@ -29,5 +31,26 @@ Arvore::Arvore(No *raiz){
 Arvore::~Arvore(){
 
 }
+
+std::string Codigo::getCodigo() const
+{
+    return this->codigo;
+}
+
+std::string Codigo::getConteudo() const
+{
+    return this->conteudo;
+}
+
+// int findCodigo(std::vector<Codigo> codes, std::string conteudo)
+// {
+//     auto it = std::find_if(codes.begin(), codes.end(), [&conteudo](const Codigo& obj) {return obj.getConteudo() == conteudo;});
+//     if (it != codes.end())
+//     {
+//         return std::distance(codes.begin(), it);
+//     }
+
+//     return 0;
+// }
 
 

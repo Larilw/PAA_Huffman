@@ -347,6 +347,8 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
 
         bits += texto_codificado[i];
     }
+
+    out << "EOC";
 }
 
 void printCodigos(std::vector<Codigo> codes)
@@ -401,6 +403,11 @@ string getOFC(ifstream &file)
     unsigned char n;
     while (!file.eof()) {
         file.read( reinterpret_cast<char*>(&n), sizeof(n) );
+        if ( n == 'E' ) {
+            if ( is_OFC(file) ) {
+                break;
+            }
+        }
         str += n;
     }
 
@@ -426,6 +433,12 @@ string leCodificacao(ifstream &file)
         if ( n == 'F' ) {
             if ( is_OFC(file) ) {
                 content += getOFC(file);
+                break;
+            }
+        }
+
+        if ( n == 'E' ) {
+            if ( is_OFC(file) ) {
                 break;
             }
         }
@@ -522,7 +535,7 @@ void menu_descompressao(bool tipo_algoritmo = false)
 }
 
 int main() {
-    menu_compressao(true);
-    menu_descompressao(true);
+    menu_compressao(false);
+    menu_descompressao(false);
     return 0;
 }

@@ -11,7 +11,9 @@
 #include <vector>
 using namespace std;
 
-
+/**
+ * Definicao da classe Simbolo
+ */
 class Simbolo{
     public:
         string simbolo;
@@ -21,14 +23,16 @@ class Simbolo{
         ~Simbolo();
 };
 
+/**
+ * Definicao da classe Arquivo, com as rotinas de gerar nos e escrever a codificacao
+ */
 class Arquivo{
     public:
         ofstream arq;
         Arquivo();
         ~Arquivo();
-        void contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao);
+        void contarAparicoes(string conteudoArq, Simbolo simbolos[]);
         void gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto);
-        // void contarPalavras(string conteudoArq, Simbolo simbolos[]);
         void escreverCodificacao(std::vector<Codigo> codes);
 };
 

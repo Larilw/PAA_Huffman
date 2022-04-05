@@ -1,7 +1,5 @@
 #include "arquivo.h"
 
-// #include "Huffman.cpp"
-
 int encontrarPalavra(Simbolo simbolos[], string palavra)
 {
     int i;
@@ -24,15 +22,25 @@ int ultimaPosicao(Simbolo simbolos[])
     return i;
 }
 
+/**
+ * Construtor da classe Simbolo
+ */
 Simbolo::Simbolo(){
     this->nAparicoes = 0;
     this->simbolo = "";
 }
 
+/**
+ * Destrutor da classe Simbolo
+ */
 Simbolo::~Simbolo(){
 
 }
 
+/**
+ * Percorre o vetor de simbolos preenchendo o vetor de nos quando o numero de aparicoes do simbolo nao e nulo
+ * Entrada: Vetor de simbolos, vetor de nos, tamanho do vetor de simbolos, ponteiro para o tamanho do vetor de nos
+ */
 void removerNulos(Simbolo simbolos[], No nos[], int tam, int *n){
     int i = 0, j = 0;
     while(i < tam){
@@ -48,6 +56,10 @@ void removerNulos(Simbolo simbolos[], No nos[], int tam, int *n){
     *n = j;
 }
 
+/**
+ * Ordena o vetor de nos de acordo com o numero de aparicoes de cada caractere, em ordem crescente
+ * Entrada: Vetor de nos e tamanho do vetor de nos
+ */
 void ordenarSimbolos(No nos[], int tam){
     int i, j;
     No x;
@@ -62,29 +74,34 @@ void ordenarSimbolos(No nos[], int tam){
     }
 }
 
+/**
+ * Construtor da classe Arquivo
+ */
 Arquivo::Arquivo()
 {
 }
 
+/**
+ * Destrutor da classe Arquivo
+ */
 Arquivo::~Arquivo()
 {
 }
 
-void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[], bool tipoCodificacao){
+/**
+ * Percorre uma string preenchendo um vetor de simbolos com os caracteres e seu numero de aparicoes na string
+ * Entrada: String com o conteudo a ser analisado, vetor de simbolos
+ */
+void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[]){
     int i;
-    //Contagem por caractere
-    if(tipoCodificacao == false){
-        for(i = 0 ; i < conteudoArq.length() ; i++){
-            int pos;
-            pos = (unsigned char)conteudoArq[i];
-            simbolos[pos].simbolo = char(pos);
-            simbolos[pos].nAparicoes++;
-        }
-    }
-    else{
-        
+    for(i = 0 ; i < conteudoArq.length() ; i++){
+        int pos;
+        pos = (unsigned char)conteudoArq[i];
+        simbolos[pos].simbolo = char(pos);
+        simbolos[pos].nAparicoes++;
     }
 }
+
 
 void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
     std::string buf;
@@ -126,28 +143,6 @@ void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
 }
 
 
-// void Arquivo::contarPalavras(string conteudoArq, Simbolo simbolos[]) {
-//     string line;
-//     stringstream ss(conteudoArq);
-
-//     string word;
- 
-//     stringstream iss(conteudoArq);
- 
-//     while (iss >> word) {
-//         int i;
-//         i = encontrarPalavra(simbolos, word);
-//         if ( i >= 0 ) {
-//             simbolos[i].simbolo = word;
-//             simbolos[i].nAparicoes++;
-//         } else {
-//             int pos = ultimaPosicao(simbolos);
-//             simbolos[pos].simbolo = word;
-//             simbolos[pos].nAparicoes++;
-//         }
-//     }
-// }
-
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto){
 
     int tam;
@@ -161,7 +156,7 @@ void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto
     int n = 0;
 
     if ( tipoCodificacao == false ) {
-        contarAparicoes(texto, simbolos, tipoCodificacao);
+        contarAparicoes(texto, simbolos);
 
     } else {
         contarPalavras(texto, simbolos, &n);
@@ -172,12 +167,5 @@ void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto
     }
 
     removerNulos(simbolos, nos, n, tamNos);
-
-void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao){
-    Simbolo simbolos[TAMANHO_ASCII];
-    string arquivo;
-    arquivo = "abacaxi nao \n";
-    contarAparicoes(arquivo, simbolos, tipoCodificacao);
-    removerNulos(simbolos, nos, TAMANHO_ASCII, tamNos);
     ordenarSimbolos(nos, *tamNos);
 }

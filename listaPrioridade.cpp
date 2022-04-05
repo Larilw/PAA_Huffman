@@ -1,18 +1,29 @@
 #include "listaPrioridade.h"
 
+/**
+ * Construtor da classe ListaPrioridade
+ */
 ListaPrioridade::ListaPrioridade(No *no){
     this->no = new No(no->conteudo, no->frequencia, no->esq, no->dir);
     this->prox = NULL;
 }
-
+/**
+ * Destrutor da classe ListaPrioridade
+ */
 ListaPrioridade::~ListaPrioridade(){
     delete this->no;
 }
 
+/**
+ * Verifica se a lista de prioridade e vazia
+ */
 bool ListaPrioridade::ehVazia(){
     return this->no->frequencia == -1;
 }
 
+/**
+ * Obtem o tamanho da lista de prioridade
+ */
 int ListaPrioridade::obterTamanho(){
     if(this->ehVazia()){
         return 0;
@@ -25,6 +36,9 @@ int ListaPrioridade::obterTamanho(){
     return tamanho;
 }
 
+/**
+ * Remove o primeiro elemento da lista de prioridade
+ */
 No *ListaPrioridade::extrairPrimeiro(){
     No *primeiro;
     primeiro = new No();
@@ -48,6 +62,10 @@ No *ListaPrioridade::extrairPrimeiro(){
     return primeiro;
 }
 
+/**
+ * Insere um novo elemento na lista de prioridade de forma ordenada
+ * Entrada: Ponteiro para o no do elemento a ser inserido
+ */
 void ListaPrioridade::inserirOrdenado(No *no){
     ListaPrioridade *novoNo, *aux, *anterior;
     if(!this->ehVazia()){

@@ -3,47 +3,6 @@
 #include <algorithm>
 #include <bitset>
 
-bool levelOrder(No *no, int level){
-    if(no == NULL){
-        return false;
-    }
-    if(level == 1){
-        if(no->conteudo.empty()){
-            cout<<no->frequencia<<" ";
-        }
-        else{
-            cout<<no->conteudo<<" ";
-        }
-        return true;
-    }
-    bool left = levelOrder(no->esq, level-1);
-    bool right = levelOrder(no->dir, level-1);
-    return left || right;
-}
-
-void printArvore(No *no){
-    int level = 1;
-    while(levelOrder(no, level)){
-        level++;
-        cout<<endl;
-    }
-}
-
-void imprimir(No *no){
-    if(no->esq != NULL){
-        imprimir(no->esq);
-    }
-    if(no->dir != NULL){
-        imprimir(no->dir);
-    }
-    if(no->conteudo.empty()){
-        cout<<no->frequencia<<" ";
-    }
-    else{
-        cout<<no->conteudo<<" ";
-    }
-}
-
 void escreveNo_recursiva(No *no, ostream &out)
 {
     int size = no->conteudo.length();
@@ -522,9 +481,4 @@ void menu_descompressao(bool tipo_algoritmo = false)
     outfile << huff.decodificar(arvore, texto_codificado, tipo_algoritmo);
 }
 
-int main() {
-    menu_compressao(true);
-    menu_descompressao(true);
-    return 0;
-}
 

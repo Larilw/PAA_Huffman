@@ -4,6 +4,9 @@
 #include <iostream>
 using namespace std;
 
+/**
+ * Definicao da classe No, com seus construtores e rotina de verificacao se o no e folha
+ */
 class No{
     public:
         string conteudo;
@@ -17,6 +20,9 @@ class No{
         bool ehFolha();
 };
 
+/**
+ * Definicao da classe Arvore 
+ */
 class Arvore{
 
     public:
@@ -25,6 +31,9 @@ class Arvore{
         ~Arvore();
 };
 
+/**
+ * Definicao da classe Codigo
+ */
 class Codigo {
     public:
         string codigo;

@@ -5,6 +5,9 @@
 #include "constantes.h"
 #include "arquivo.h"
 
+/**
+ * Definicao da classe ListaPrioridade
+ */
 class ListaPrioridade{
     public:
         No *no;

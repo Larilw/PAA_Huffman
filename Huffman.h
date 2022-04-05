@@ -13,6 +13,8 @@ class Huffman{
         void codificar_recursiva(No *raiz, std::string codigo, std::vector<Codigo> &codes);
         std::vector<Codigo> codificar(No *raiz, std::vector<Codigo> &codes);
         std::string decodificar(No *raiz, std::string texto_codificado, bool tipo_decodificacao);
+        void menu_compressao(bool tipo_algoritmo = false);
+        void menu_descompressao(bool tipo_algoritmo = false);
 };
 
 #endif

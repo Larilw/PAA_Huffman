@@ -174,9 +174,10 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_de
     while ( i < aux.size() ) {
         if ( noAux->ehFolha() ) {
             texto_decodificado += noAux->conteudo;
+          
             noAux = raiz;
 
-            if ( tipo_decodificacao == true ) {
+            if ( tipo_decodificacao == true && texto_decodificado.back() != '\n') {
                 texto_decodificado += " ";
             }
 
@@ -307,6 +308,8 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
 
         bits += texto_codificado[i];
     }
+
+    out << "EOC";
 }
 
 void printCodigos(std::vector<Codigo> codes)
@@ -361,6 +364,11 @@ string getOFC(ifstream &file)
     unsigned char n;
     while (!file.eof()) {
         file.read( reinterpret_cast<char*>(&n), sizeof(n) );
+        if ( n == 'E' ) {
+            if ( is_OFC(file) ) {
+                break;
+            }
+        }
         str += n;
     }
 
@@ -386,6 +394,12 @@ string leCodificacao(ifstream &file)
         if ( n == 'F' ) {
             if ( is_OFC(file) ) {
                 content += getOFC(file);
+                break;
+            }
+        }
+
+        if ( n == 'E' ) {
+            if ( is_OFC(file) ) {
                 break;
             }
         }
@@ -483,4 +497,3 @@ void menu_descompressao(std::string path_arquivo, bool tipo_algoritmo)
 
     cout << "Arquivo descompactado com sucesso" << endl;
 }
-

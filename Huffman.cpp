@@ -472,7 +472,7 @@ void menu_descompressao(std::string path_arquivo, bool tipo_algoritmo)
     std::string path_compactado;
     std::string path_descompactado;
     path_compactado = path_arquivo;
-    path_compactado += "-compactado.bin";
+    path_compactado += ".bin";
 
     ifstream compressed_file(path_compactado, ios::out | ios::binary);
 

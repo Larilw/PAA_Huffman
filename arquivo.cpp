@@ -1,5 +1,9 @@
 #include "arquivo.h"
 
+/**
+ * Procura um simbolo no vetor de simbolos dado uma string
+ * Entrada: Vetor de simbolos, string palavra
+ */
 int encontrarPalavra(Simbolo simbolos[], string palavra)
 {
     int i;
@@ -12,6 +16,10 @@ int encontrarPalavra(Simbolo simbolos[], string palavra)
     return -1;
 }
 
+/**
+ * Retorna a última posição do vetor de Símbolos
+ * Entrada: Vetor de simbolos
+ */
 int ultimaPosicao(Simbolo simbolos[])
 {
     int i;
@@ -102,7 +110,10 @@ void Arquivo::contarAparicoes(string conteudoArq, Simbolo simbolos[]){
     }
 }
 
-
+/**
+ * Percorre uma string preenchendo o vetor de símbolos, contando a frequência de cada símbolo
+ * Entrada: String com o conteudo a ser analisado, vetor de simbolos e um ponteiro para guardar a quantidade de símbolos no vetor
+ */
 void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
     std::string buf;
     std::stringstream ss(conteudoArq);
@@ -142,7 +153,10 @@ void contarPalavras(string conteudoArq, Simbolo simbolos[], int *n) {
     }
 }
 
-
+/**
+ * Gera todos os nós para montar a árvore binária de codificação
+ * Entrada: Vetor de nós, ponteiro para guardar tamanho do vetor de nós, tipo de codificação e string com conteúdo do arquivo original
+ */
 void Arquivo::gerarNos(No nos[], int *tamNos, bool tipoCodificacao, string texto){
 
     int tam;

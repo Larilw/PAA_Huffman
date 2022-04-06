@@ -3,6 +3,12 @@
 #include <algorithm>
 #include <bitset>
 
+/**
+*   @param No *no
+*   @param ostream &out
+*
+*   Escreve cada nó em bits no arquivo de saída
+**/
 void escreveNo_recursiva(No *no, ostream &out)
 {
     int size = no->conteudo.length();
@@ -17,12 +23,24 @@ void escreveNo_recursiva(No *no, ostream &out)
     }
 }
 
+/**
+*   @param No *raiz
+*   @param ostream &out
+*
+*   Escreve a árvore inteira no arquivo de saída
+**/
 void escreveArvore(No *raiz, ostream &out)
 {
     escreveNo_recursiva(raiz, out);
     out << endl << ";;--;;--;;" << endl;
 }
 
+/**
+*   @param ifstream &file
+*   @param ostream No *&no
+*
+*   Lê cada nó da árvore no arquivo comprimido de entrada
+**/
 void leNo_recursiva(ifstream &file, No *&no)
 {
     if (file.eof()) {
@@ -35,6 +53,7 @@ void leNo_recursiva(ifstream &file, No *&no)
     if ( c == '\n'  ) {
         qtd--;
         file.read((char*) &c, sizeof(char));
+        // Verifica se é o final da leitura da árvore 
         if ( c == ';' ) {
             file.seekg(-2, std::ios::cur);
             return;
@@ -66,6 +85,12 @@ void leNo_recursiva(ifstream &file, No *&no)
     }
 }
 
+/**
+*   @param ifstream &file
+*   @return No* raiz da árvore   
+*
+*   Carrega a árvore do arquivo
+**/
 No* carregaArvore(ifstream &file)
 {
     No *raiz;
@@ -77,6 +102,13 @@ No* carregaArvore(ifstream &file)
     return raiz;
 }
 
+/**
+*   @param const & s
+*   @param char delim delimitador
+*   @return vector<string>
+*
+*   Separa uma string pelo delimitador e retorna em um array
+**/
 std::vector<std::string> explode(std::string const & s, char delim)
 {
     std::vector<std::string> result;
@@ -90,37 +122,36 @@ std::vector<std::string> explode(std::string const & s, char delim)
     return result;
 }
 
-int findDelimiter(string str, char del)
-{
-    int i = 0;
-    for (char c : str) {
-        if ( c == del ) {
-            return i;
-        }
-        i++;
-    }
-
-    return -1;
-}
-
 /**
-*   Encontra o código no array de códigos a partir do conteúdo
+*   @param vector<Codigo> vetor de códigos
+*   @param string conteudo
+*   @return integer Index do código encontrado no array
 *
+*   Procura pelo código no array de códigos
 **/
 int findCodigo(std::vector<Codigo> codes, std::string conteudo)
 {
+    // Percorre vetor de códigos procurando pela string conteudo no conteúdo de cada objeto código
     auto it = std::find_if(codes.begin(), codes.end(), [&conteudo](const Codigo& obj) {
         return obj.getConteudo() == conteudo;
     });
 
     if (it != codes.end())
     {
+        // Caso achou, retorna o número de index
         return std::distance(codes.begin(), it);
     }
     
+    // Caso não encontrou, retorna -1
     return -1;
 }
 
+/**
+*   @param ListaPrioridade *lista ponteiro
+*   @return No* raiz da árvore gerada
+*
+*   Gera uma árvore a partir de uma lista de prioridade
+**/
 No *Huffman::gerarArvore(ListaPrioridade *lista){
     for(; lista->obterTamanho() > 1 ;){
         No *novoNo;
@@ -133,14 +164,27 @@ No *Huffman::gerarArvore(ListaPrioridade *lista){
     return lista->extrairPrimeiro();
 }
 
+/**
+*   @param No *raiz ponteiro para raiz da árvore
+*   @param vector<Codigo> &codes
+*   @return vector<Codigo>
+*
+*   Codifica todos os símbolos e insere em um array de códigos
+**/
 std::vector<Codigo> Huffman::codificar(No *raiz, std::vector<Codigo> &codes)
 {
-    // std::vector<Codigo> codes;
     codificar_recursiva(raiz, "", codes);
 
     return codes;
 }
 
+/**
+*   @param No *raiz ponteiro para raiz da árvore
+*   @param vector<Codigo> &codes
+*   @return vector<Codigo>
+*
+*   Codifica todos os símbolos e insere em um array de códigos
+**/
 void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codigo> &codes)
 {
     // Se o nó for folha, pega o conteúdo do nó e seta no array com seu código de identificação
@@ -160,7 +204,14 @@ void Huffman::codificar_recursiva(No *raiz, std::string codigo, std::vector<Codi
     }
 }
 
-
+/**
+*   @param No *raiz ponteiro para raiz da árvore
+*   @param string texto_codificado
+*   @param bool tipo_decodificacao caso false é a decoficação por caractere, caso true é por palavras
+*   @return string texto_decodificado
+*
+*   Recebe o texto codificado e retorna uma string com o texto decodificado, utilizando a árvore com os códigos para decodificação
+**/
 string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_decodificacao)
 {
     std::string texto_decodificado;
@@ -171,6 +222,7 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_de
 
     std::string::size_type i = 0;
 
+    // Percorre todo o texto codificado
     while ( i < aux.size() ) {
         if ( noAux->ehFolha() ) {
             texto_decodificado += noAux->conteudo;
@@ -187,7 +239,6 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_de
             // o caracter, noAux recebe filho da direita
             if ( s == "1" ) {
                 noAux = noAux->dir;
-                // } else if ( s == "0" ) {
 
             } else {
             // Caso 0, recebe filho da esquerda
@@ -201,56 +252,21 @@ string Huffman::decodificar(No *raiz, std::string texto_codificado, bool tipo_de
     return texto_decodificado;
 }
 
-uint8_t ucharToBitArray(char bits[8], uint8_t c)
-{
-   for(uint8_t i=0; i<8; i++)
-   {
-     if(c & (1<<i))
-     {
-       bits[7-i] = '1';
-     }
-     else
-     {
-       bits[7-i] = '0';
-     }
-   }
-
-   return c;
-}
-
-int findFOC(ifstream &file)
-{
-    int i = 0;
-    while (!file.eof()) {
-        char c;
-        file.get(c);
-        if ( c == 'F' ) {
-            file.get(c);
-            i++;
-            if ( c == 'O' ) {
-                file.get(c);
-                i++;
-                if ( c == 'C' ) {
-                    return i;
-                }
-            }
-        }
-        i++;
-    }
-
-    return -1;
-}
-
+/**
+*   @param vector<Codigo> codes Vetor de códigos por símbolo
+*   @param ofstream &out Ponteiro para o arquivo de saída
+*   @param string str String do texto do arquivo original, string que será codificada
+*   @param bool tipoCodificacao Tipo de codificação, caso true por palavra, caso false por caractere
+*
+*   Recebe o texto codificado e retorna uma string com o texto decodificado, utilizando a árvore com os códigos para decodificação
+**/
 void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, bool tipoCodificacao)
 {
     int i;
 
-    // Move para o final do arquivo
+    // Move o ponteiro para o final do arquivo
     out.seekp(0, ios::end);
     
-    // Escreve \n
-    // out << endl;
-
     std::string texto_codificado;
 
     // Codificação por caractere
@@ -259,6 +275,7 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
             string s(1, str[i]);
             int index = findCodigo(codes, s);
             if ( index != -1 ) {
+                // Itera na string texto_codificado o código de codificação do símbolo
                 texto_codificado += codes[index].getCodigo();
             }
         }
@@ -288,7 +305,7 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
     int j = 0;
     std::string bits;
 
-    // cout << "Texto codificado: " << texto_codificado << endl;
+    // Escreve bit por bit no arquivo de saída da codificação
     for ( int i=0; i < texto_codificado.length(); i++) {
 
         if ( i % 8 == 0 && i != 0 ) {
@@ -298,12 +315,10 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
             bits = "";
 
         } else if ( i == texto_codificado.length() -1 ) {
-            // out << endl;
             out << "FOC";
             for (int j = 0; j < bits.length(); j++) {
                 out << bits[j];
             }
-            // out << endl;
         }
 
         bits += texto_codificado[i];
@@ -312,6 +327,11 @@ void escreverCodificacao(std::vector<Codigo> codes, ofstream &out, string str, b
     out << "EOC";
 }
 
+/**
+*   @param vector<Codigo> codes Vetor de códigos por símbolo
+*
+*   Printa código de todos os símbolos registrados no vetor de códigos
+**/
 void printCodigos(std::vector<Codigo> codes)
 {
     for (auto it = begin (codes); it != end (codes); ++it) {
@@ -320,6 +340,11 @@ void printCodigos(std::vector<Codigo> codes)
     }
 }
 
+/**
+*   @param No *raiz
+*
+*   Printa a árvore
+**/
 void printArvore2(No *raiz)
 {
     if (raiz == NULL) {
@@ -331,6 +356,12 @@ void printArvore2(No *raiz)
     printArvore2(raiz->dir);
 }
 
+/**
+*   @param ifstream &input arquivo original
+*   @return string String que armazena todo o conteúdo do arquivo
+*
+*   Lê conteudo contido no árquivo original
+**/
 string leConteudo(ifstream &input)
 {
     string tp;
@@ -343,6 +374,12 @@ string leConteudo(ifstream &input)
     return content;
 }
 
+/**
+*   @param ifstream &file Endereço do arquivo de entrada da compressão
+*   @return bool true se for o final do texto comprimido
+*
+*   Verifica se é o final da string de compressão no arquivo
+**/
 bool is_OFC(ifstream &file)
 {
     unsigned char n;
@@ -358,6 +395,12 @@ bool is_OFC(ifstream &file)
     return false;
 }
 
+/**
+*   @param ifstream &file Endereço do arquivo de entrada da compressão
+*   @return string Conteúdo do final da string de compressão
+*
+*   Obtém e retorna o final da string de compressão no arquivo
+**/
 string getOFC(ifstream &file)
 {
     std::string str = "";
@@ -375,6 +418,12 @@ string getOFC(ifstream &file)
     return str;
 }
 
+/**
+*   @param ifstream &file Endereço do arquivo de entrada da compressão
+*   @return string Conteúdo codificado
+*
+*   Lê o arquivo codificado e retorna todo o conteúdo codificado em uma string
+**/
 string leCodificacao(ifstream &file)
 {
     string tp = "";
@@ -410,7 +459,12 @@ string leCodificacao(ifstream &file)
     return content;
 }
 
-void menu_compressao(std::string path_arquivo, bool tipo_algoritmo)
+/**
+*   @param bool tipo_algoritmo Caso true utiliza o algoritmo por palavra, caso false utiliza por caractere
+*
+*   Função que realiza a compressão, chamada do menu
+**/
+void menu_compressao(bool tipo_algoritmo = false)
 {
     ifstream original_file;
     std::string path_original = path_arquivo;
@@ -464,9 +518,13 @@ void menu_compressao(std::string path_arquivo, bool tipo_algoritmo)
     cout << "Arquivo compactado com sucesso." << endl;
 }
 
-void menu_descompressao(std::string path_arquivo, bool tipo_algoritmo)
+/**
+*   @param bool tipo_algoritmo Caso true utiliza o algoritmo por palavra, caso false utiliza por caractere
+*
+*   Função que realiza a descompressão, chamada do menu
+**/
+void menu_compressao(std::string path_arquivo, bool tipo_algoritmo)
 {
-
     cout << "Descompactacao iniciada" << endl;
 
     std::string path_compactado;

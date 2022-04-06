@@ -53,11 +53,17 @@ Arvore::~Arvore(){
 
 }
 
+/**
+ * Retorna o código registrado
+ */
 std::string Codigo::getCodigo() const
 {
     return this->codigo;
 }
 
+/**
+ * Retorna o conteudo registrado
+ */
 std::string Codigo::getConteudo() const
 {
     return this->conteudo;

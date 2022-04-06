@@ -1,33 +1,8 @@
 #include "menu.h"
 
-void lerNomeArquivo(string *path, bool operacao){
-    cout<<"Insira o caminho do arquivo sem a extensao" << endl;
-    ifstream original_file;
-    std::string arq;
-    cin >> *path;
-    if(operacao == false){
-        arq = *path + ".txt";
-    }
-    else{
-        arq = *path + ".bin";
-    }
-    original_file.open(arq);
-
-    while(!original_file){
-        cout<<"Arquivo nao encontrado, insira o caminho novamente."<<endl;
-        cin >>*path;
-        if(operacao == false){
-            arq = *path + ".txt";
-        }
-        else{
-            arq = *path + ".bin";
-        }
-        original_file.open(arq);
-    }
-    original_file.close();
-}
-
-
+/**
+ * Definicao da classe ListaPrioridade
+ */
 void imprimirOpcaoSelecionada(int pos, int posImprimir, string mensagem){
     if(pos == posImprimir){
         cout<<"* ";
